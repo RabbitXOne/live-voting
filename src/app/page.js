@@ -42,7 +42,7 @@ export default function Main() {
                 
                 const localStorageVoterId = localStorage.getItem('voterId');
                 const cookieVoterId = document.cookie.split(';').find(item => item.trim().startsWith('voterId='));
-                if(localStorage.getItem('hasVoted') === 'true' || document.cookie.split(';').some((item) => item.trim().startsWith('hasVoted=')) || (cookieVoterId && localStorageVoterId !== cookieVoterId.split('=')[1])) {
+                if(data.mode === "vote" && (localStorage.getItem('hasVoted') === 'true' || document.cookie.split(';').some((item) => item.trim().startsWith('hasVoted=')) || (cookieVoterId && localStorageVoterId !== cookieVoterId.split('=')[1]))) {
                     if(localStorage.getItem('hasVoted') === 'true' && localStorage.getItem('votedOnIndex')) {
                         setMode("thankYou");
                         setShowThanksTitle(true);
@@ -90,7 +90,7 @@ export default function Main() {
             });
             
             const voterId = localStorage.getItem('voterId');
-            if (voterId && !localStorage.getItem('votedOnIndex')) {
+            if (mode === "vote" && voterId && !localStorage.getItem('votedOnIndex')) {
                 fetch(`/api/checkvote?voterId=${voterId}`)
                     .then(response => response.json())
                     .then(data => {
@@ -103,7 +103,7 @@ export default function Main() {
                     });
             }
 
-            if (!localStorage.getItem('voterId')) {
+            if (mode === "vote" && !localStorage.getItem('voterId')) {
                 const voterId = generateVoterId();
                 document.cookie = `voterId=${voterId}; max-age=31536000; path=/`;
                 localStorage.setItem('voterId', voterId);
